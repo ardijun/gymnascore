@@ -363,12 +363,15 @@ export default function PesertaPage({
                     
                     {/* SEARCH BOX */}
                     <div className="relative w-full sm:w-60">
-                      <Search className="w-3.5 h-3.5 text-slate-450 absolute left-3 top-1/2 -translate-y-1/2" />
+                      <label htmlFor="search-athlete" className="sr-only">Cari nama kontestan</label>
+                      <Search className="w-3.5 h-3.5 text-slate-450 absolute left-3 top-1/2 -translate-y-1/2" aria-hidden="true" />
                       <input
+                        id="search-athlete"
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Cari nama kontestan..."
+                        aria-label="Cari nama kontestan"
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl py-1.5 pl-9 pr-4 text-xs font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:bg-white focus:ring-1 focus:ring-sky-500 transition-all"
                       />
                     </div>
@@ -379,7 +382,7 @@ export default function PesertaPage({
                       onChange={(e) => setSelectedClubFilter(e.target.value)}
                       className="w-full sm:w-auto bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 text-2xs font-bold text-slate-700 outline-none cursor-pointer focus:border-sky-500 transition-colors"
                     >
-                      <option value="ALL">Semua Klub (Daerah)</option>
+                      <option value="ALL">Semua Kontingen / Klub / Daerah</option>
                       {Array.from(new Set(athletes.map(a => a.club))).map((club) => (
                         <option key={club} value={club}>{club}</option>
                       ))}
@@ -405,7 +408,15 @@ export default function PesertaPage({
                       <div
                         key={athlete.id}
                         id={`athlete-lookup-${athlete.id}`}
+                        role="button"
+                        tabIndex={0}
                         onClick={() => setViewedAthleteId(athlete.id)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            setViewedAthleteId(athlete.id);
+                          }
+                        }}
                         className={`p-4 rounded-xl border transition-all duration-200 cursor-pointer flex flex-col justify-between min-h-[140px] relative overflow-hidden ${
                           isViewed
                             ? 'bg-gradient-to-br from-sky-500/5 to-indigo-500/5 border-sky-500 ring-2 ring-sky-500/10 scale-[1.01] shadow-md shadow-sky-500/5'

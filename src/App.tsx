@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Athlete, LiveScoreboardEntry, ActiveApparatusEvent, Competition, Account, CertificateTemplate } from './types';
+import { Athlete, LiveScoreboardEntry, ActiveApparatusEvent, Competition, CompetitionParticipant, Account, CertificateTemplate } from './types';
 import PortalSelectorPage from './pages/PortalSelectorPage';
 import PesertaPage from './pages/PesertaPage';
 import PanitiaPage from './pages/PanitiaPage';
@@ -231,6 +231,7 @@ export default function App() {
   const [athletes, setAthletes] = useState<Athlete[]>(SEED_ATHLETES);
   const [isLiveWsFeed, setIsLiveWsFeed] = useState<boolean>(true);
   const [competitions, setCompetitions] = useState<Competition[]>(INITIAL_COMPETITIONS);
+  const [competitionParticipants, setCompetitionParticipants] = useState<CompetitionParticipant[]>([]);
   const [certificateTemplates, setCertificateTemplates] = useState<CertificateTemplate[]>(() => {
     const stored = localStorage.getItem('gymnascore_cert_templates');
     if (stored) {
@@ -405,6 +406,7 @@ export default function App() {
     setArenas(INITIAL_ARENAS);
     setAthletes(SEED_ATHLETES);
     setCompetitions(INITIAL_COMPETITIONS);
+    setCompetitionParticipants([]);
     setSelectedApparatus('ALL');
   };
 
@@ -524,6 +526,8 @@ export default function App() {
           setArenas={setArenas}
           competitions={competitions}
           setCompetitions={setCompetitions}
+          competitionParticipants={competitionParticipants}
+          setCompetitionParticipants={setCompetitionParticipants}
           certificateTemplates={certificateTemplates}
           setCertificateTemplates={setCertificateTemplates}
           handleResetScoringSystem={handleResetScoringSystem}

@@ -13,7 +13,7 @@ import {
   FolderLock,
   CalendarDays
 } from 'lucide-react';
-import { Athlete, ActiveApparatusEvent, Competition, CertificateTemplate } from '../types';
+import { Athlete, ActiveApparatusEvent, Competition, CompetitionParticipant, CertificateTemplate } from '../types';
 import { generateCertificatePDF } from '../lib/certificate';
 import { navigateTo } from '../lib/navigation';
 import { ConfirmModal } from '../components/ConfirmModal';
@@ -25,6 +25,8 @@ interface PanitiaPageProps {
   setArenas: React.Dispatch<React.SetStateAction<ActiveApparatusEvent[]>>;
   competitions: Competition[];
   setCompetitions: React.Dispatch<React.SetStateAction<Competition[]>>;
+  competitionParticipants: CompetitionParticipant[];
+  setCompetitionParticipants: React.Dispatch<React.SetStateAction<CompetitionParticipant[]>>;
   certificateTemplates: CertificateTemplate[];
   setCertificateTemplates: React.Dispatch<React.SetStateAction<CertificateTemplate[]>>;
   handleResetScoringSystem: () => void;
@@ -37,6 +39,8 @@ export default function PanitiaPage({
   setArenas,
   competitions,
   setCompetitions,
+  competitionParticipants,
+  setCompetitionParticipants,
   certificateTemplates,
   setCertificateTemplates,
   handleResetScoringSystem
@@ -99,6 +103,8 @@ export default function PanitiaPage({
   const [selectedCertificateAthleteId, setSelectedCertificateAthleteId] = useState<string>(athletes[0]?.id || '');
   const [selectedCertificateCompetitionId, setSelectedCertificateCompetitionId] = useState<string>(competitions[0]?.id || '');
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>(certificateTemplates[0]?.id || 'template-default');
+  const [selectedEventParticipantCompetitionId, setSelectedEventParticipantCompetitionId] = useState<string>(competitions[0]?.id || '');
+  const [selectedEventParticipantAthleteId, setSelectedEventParticipantAthleteId] = useState<string>(athletes[0]?.id || '');
   const [templateDraft, setTemplateDraft] = useState<CertificateTemplate>(() => certificateTemplates[0] || {
     id: 'template-default',
     name: 'Default Elegant',
@@ -417,8 +423,9 @@ export default function PanitiaPage({
             <form onSubmit={handleRegister} className="space-y-4 text-2xs">
               
               <div className="space-y-1">
-                <label className="text-[9px] font-mono font-bold text-slate-450 uppercase block">NAMA LENGKAP KONTENSTAN</label>
+                <label htmlFor="new-athlete-name" className="text-[9px] font-mono font-bold text-slate-450 uppercase block">NAMA LENGKAP KONTENSTAN</label>
                 <input
+                  id="new-athlete-name"
                   type="text"
                   required
                   value={newAthName}
@@ -429,26 +436,32 @@ export default function PanitiaPage({
               </div>
 
               <div className="space-y-1">
-                <label className="text-[9px] font-mono font-bold text-slate-450 uppercase block">DAERAH ASAL (KONTINGEN / KLUB)</label>
-                <select
+                <label htmlFor="new-athlete-club" className="text-[9px] font-mono font-bold text-slate-450 uppercase block">ASAL KONTINGEN / KLUB / KOTA</label>
+                <input
+                  id="new-athlete-club"
+                  type="text"
+                  list="club-suggestions"
                   value={newAthClub}
                   onChange={(e) => setNewAthClub(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 text-xs font-semibold text-slate-700 outline-none cursor-pointer focus:border-amber-500 transition-colors"
-                >
-                  <option value="DKI Jakarta">DKI Jakarta</option>
-                  <option value="Jawa Timur">Jawa Timur</option>
-                  <option value="Jawa Barat">Jawa Barat</option>
-                  <option value="Jawa Tengah">Jawa Tengah</option>
-                  <option value="Sumatera Barat">Sumatera Barat</option>
-                  <option value="Lampung">Lampung</option>
-                  <option value="Bali">Bali</option>
-                  <option value="Sulawesi Selatan">Sulawesi Selatan</option>
-                </select>
+                  placeholder="Contoh: Klub Merah Bandung, Kota Semarang, Jawa Timur"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 text-xs font-semibold text-slate-700 outline-none focus:border-amber-500 transition-colors"
+                />
+                <datalist id="club-suggestions">
+                  <option value="DKI Jakarta" />
+                  <option value="Jawa Timur" />
+                  <option value="Jawa Barat" />
+                  <option value="Jawa Tengah" />
+                  <option value="Sumatera Barat" />
+                  <option value="Lampung" />
+                  <option value="Bali" />
+                  <option value="Sulawesi Selatan" />
+                </datalist>
               </div>
 
               <div className="space-y-1">
-                <label className="text-[9px] font-mono font-bold text-slate-450 uppercase block">KATEGORI UMUR (DIVISION)</label>
+                <label htmlFor="new-athlete-age" className="text-[9px] font-mono font-bold text-slate-450 uppercase block">KATEGORI UMUR (DIVISION)</label>
                 <select
+                  id="new-athlete-age"
                   value={newAthAge}
                   onChange={(e) => setNewAthAge(e.target.value)}
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 text-xs font-semibold text-slate-700 outline-none cursor-pointer focus:border-amber-500 transition-colors"
@@ -459,8 +472,8 @@ export default function PanitiaPage({
                 </select>
               </div>
 
-              <div className="space-y-1">
-                <label className="text-[9px] font-mono font-bold text-slate-455 uppercase block">GENDER (SINKRONISASI ALAT FIG)</label>
+              <fieldset className="space-y-2 border border-slate-200 rounded-2xl p-3 bg-slate-50">
+                <legend className="text-[9px] font-mono font-bold text-slate-450 uppercase tracking-wider">GENDER (SINKRONISASI ALAT FIG)</legend>
                 <div className="flex gap-4 p-1">
                   <label className="flex items-center gap-1.5 text-slate-700 font-bold cursor-pointer">
                     <input
@@ -483,7 +496,7 @@ export default function PanitiaPage({
                     Puteri (WAG)
                   </label>
                 </div>
-              </div>
+              </fieldset>
 
               <button
                 type="submit"
@@ -508,17 +521,24 @@ export default function PanitiaPage({
                           <label className="text-[8px] font-mono font-bold uppercase block text-slate-450">Nama Lengkap</label>
                           <input type="text" value={editAthName} onChange={e => setEditAthName(e.target.value)} className="w-full bg-white border border-slate-200 rounded-md p-1.5 text-xs font-bold" />
                           
-                          <label className="text-[8px] font-mono font-bold uppercase block text-slate-450 mt-1">Daerah Asal</label>
-                          <select value={editAthClub} onChange={e => setEditAthClub(e.target.value)} className="w-full bg-white border border-slate-200 rounded-md p-1.5 text-xs font-bold">
-                            <option value="DKI Jakarta">DKI Jakarta</option>
-                            <option value="Jawa Timur">Jawa Timur</option>
-                            <option value="Jawa Barat">Jawa Barat</option>
-                            <option value="Jawa Tengah">Jawa Tengah</option>
-                            <option value="Sumatera Barat">Sumatera Barat</option>
-                            <option value="Lampung">Lampung</option>
-                            <option value="Bali">Bali</option>
-                            <option value="Sulawesi Selatan">Sulawesi Selatan</option>
-                          </select>
+                          <label className="text-[8px] font-mono font-bold uppercase block text-slate-450 mt-1">Asal Kontingen / Klub / Kota</label>
+                          <input
+                            type="text"
+                            list="edit-club-suggestions"
+                            value={editAthClub}
+                            onChange={e => setEditAthClub(e.target.value)}
+                            className="w-full bg-white border border-slate-200 rounded-md p-1.5 text-xs font-bold"
+                          />
+                          <datalist id="edit-club-suggestions">
+                            <option value="DKI Jakarta" />
+                            <option value="Jawa Timur" />
+                            <option value="Jawa Barat" />
+                            <option value="Jawa Tengah" />
+                            <option value="Sumatera Barat" />
+                            <option value="Lampung" />
+                            <option value="Bali" />
+                            <option value="Sulawesi Selatan" />
+                          </datalist>
 
                           <label className="text-[8px] font-mono font-bold uppercase block text-slate-450 mt-1">Divisi (Kategori Umur)</label>
                           <select value={editAthAge} onChange={e => setEditAthAge(e.target.value)} className="w-full bg-white border border-slate-200 rounded-md p-1.5 text-xs font-bold">
@@ -1113,6 +1133,118 @@ export default function PanitiaPage({
                 )}
               </div>
 
+            </div>
+
+            {/* EVENT PARTICIPANT REGISTRATION CARD */}
+            <div className="bg-white border border-slate-200 p-5 sm:p-6 rounded-3xl shadow-xs space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-100 pb-4">
+                <div>
+                  <h4 className="text-sm font-display font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
+                    <Users className="w-5 h-5 text-emerald-600" />
+                    MANAJEMEN PESERTA PER EVENT / KEJUARAAN
+                  </h4>
+                  <p className="text-2xs text-slate-500 mt-1">
+                    Pilih kejuaraan, lalu daftarkan atlet yang akan berlaga di event tersebut. Setiap event bisa memiliki daftar peserta yang berbeda.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="space-y-3">
+                  <div className="space-y-1">
+                    <label htmlFor="event-competition-select" className="text-[9px] font-mono font-bold text-slate-450 uppercase block">Pilih Event / Kejuaraan</label>
+                    <select
+                      id="event-competition-select"
+                      value={selectedEventParticipantCompetitionId}
+                      onChange={(e) => setSelectedEventParticipantCompetitionId(e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 text-xs font-semibold text-slate-700 outline-none focus:border-emerald-500 transition-colors"
+                    >
+                      {competitions.map((comp) => (
+                        <option key={comp.id} value={comp.id}>
+                          {comp.name} • {comp.status}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label htmlFor="event-athlete-select" className="text-[9px] font-mono font-bold text-slate-450 uppercase block">Daftar Atlet untuk Event</label>
+                    <select
+                      id="event-athlete-select"
+                      value={selectedEventParticipantAthleteId}
+                      onChange={(e) => setSelectedEventParticipantAthleteId(e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 text-xs font-semibold text-slate-700 outline-none focus:border-emerald-500 transition-colors"
+                    >
+                      {athletes.map((ath) => (
+                        <option key={ath.id} value={ath.id}>{ath.name} • {ath.club}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!selectedEventParticipantCompetitionId || !selectedEventParticipantAthleteId) return;
+                      const exists = competitionParticipants.some(item => item.competitionId === selectedEventParticipantCompetitionId && item.athleteId === selectedEventParticipantAthleteId);
+                      if (exists) {
+                        setFeedMsg('Atlet sudah terdaftar di event ini.');
+                        setTimeout(() => setFeedMsg(''), 3000);
+                        return;
+                      }
+                      setCompetitionParticipants(prev => [
+                        ...prev,
+                        {
+                          id: `cp-${Date.now()}`,
+                          competitionId: selectedEventParticipantCompetitionId,
+                          athleteId: selectedEventParticipantAthleteId,
+                          registeredAt: new Date().toISOString()
+                        }
+                      ]);
+                      const athlete = athletes.find(a => a.id === selectedEventParticipantAthleteId);
+                      const competition = competitions.find(c => c.id === selectedEventParticipantCompetitionId);
+                      setFeedMsg(`Atlet ${athlete?.name} berhasil didaftarkan ke ${competition?.name}.`);
+                      setTimeout(() => setFeedMsg(''), 4000);
+                    }}
+                    className="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-3 rounded-xl font-black text-xs border-none cursor-pointer transition-colors shadow-sm"
+                  >
+                    Tambahkan Atlet ke Event
+                  </button>
+                </div>
+
+                <div className="space-y-3">
+                  <h5 className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-400">Peserta Terdaftar</h5>
+                  <div className="h-full overflow-y-auto rounded-3xl border border-slate-200 bg-slate-50 p-4 text-xs space-y-3">
+                    {competitions.length === 0 ? (
+                      <div className="text-slate-500 italic">Tambahkan event terlebih dahulu untuk melihat daftar peserta.</div>
+                    ) : (
+                      (() => {
+                        const registered = competitionParticipants.filter(item => item.competitionId === selectedEventParticipantCompetitionId);
+                        if (registered.length === 0) {
+                          return <div className="text-slate-500 italic">Belum ada peserta didaftarkan untuk event ini.</div>;
+                        }
+                        return registered.map((item) => {
+                          const athlete = athletes.find(a => a.id === item.athleteId);
+                          return (
+                            <div key={item.id} className="flex items-center justify-between gap-3 rounded-2xl bg-white border border-slate-200 p-3">
+                              <div>
+                                <div className="font-bold text-slate-900 text-[11px]">{athlete?.name || 'Atlet tidak ditemukan'}</div>
+                                <div className="text-[9px] text-slate-500">{athlete?.club || 'Unknown'} • {athlete?.ageCategory || 'Kategori'} • {new Date(item.registeredAt).toLocaleDateString('id-ID')}</div>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => setCompetitionParticipants(prev => prev.filter(entry => entry.id !== item.id))}
+                                className="text-rose-600 hover:text-rose-800 text-[10px] font-bold"
+                              >
+                                Hapus
+                              </button>
+                            </div>
+                          );
+                        });
+                      })()
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* INLINE APPARATUS MANAGEMENT CARD */}

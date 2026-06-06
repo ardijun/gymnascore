@@ -174,7 +174,7 @@ export default function LeadLeaderboard({
             <tr className="border-b border-slate-200 bg-slate-50/50">
               <th className="py-4 px-5 text-2xs font-mono tracking-wider text-slate-500 uppercase font-bold">Peringkat</th>
               <th className="py-4 px-5 text-2xs font-mono tracking-wider text-slate-500 uppercase font-bold">Atlit</th>
-              <th className="py-4 px-4 text-2xs font-mono tracking-wider text-slate-500 uppercase font-bold">Provinsi / Kategori</th>
+              <th className="py-4 px-4 text-2xs font-mono tracking-wider text-slate-500 uppercase font-bold">Kontingen / Kategori</th>
               <th className="py-4 px-4 text-2xs font-mono tracking-wider text-slate-500 uppercase font-bold">Alat</th>
               <th className="py-2 text-center text-2xs font-mono tracking-wider text-slate-500 uppercase font-bold bg-sky-50/50">D-Score</th>
               <th className="py-2 text-center text-2xs font-mono tracking-wider text-slate-500 uppercase font-bold bg-emerald-50/50">E-Score</th>

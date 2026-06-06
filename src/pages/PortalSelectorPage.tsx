@@ -148,7 +148,7 @@ export default function PortalSelectorPage({
             </div>
             <div className="min-w-0">
               <span className="block text-[8px] sm:text-2xs font-mono text-slate-400 uppercase font-bold leading-none truncate">Kontingen Aktif</span>
-              <span className="block text-xs sm:text-lg font-display font-black text-slate-900 mt-1 truncate">{activeClubs} Provinsi</span>
+              <span className="block text-xs sm:text-lg font-display font-black text-slate-900 mt-1 truncate">{activeClubs} Grup</span>
             </div>
           </div>
 

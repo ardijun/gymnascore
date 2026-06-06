@@ -99,7 +99,7 @@ export default function RoleLogin({ role, onLoginSuccess }: RoleLoginProps) {
     peserta: {
       title: 'Portal Atlet & Kontingen Daerah',
       subtitle: 'Sertifikat Nilai & Buku Rekapitulasi Digital',
-      desc: 'Masukkan Username dan Password Anda untuk melacak riwayat skor, melihat statistik kompetisi, serta mengunduh E-Sertifikat kejuaraan.',
+      desc: 'Masukkan username dan password untuk melihat skor, statistik, dan mengunduh E-Sertifikat secara mudah.',
       colorTheme: 'from-sky-500 to-indigo-600 shadow-sky-500/10',
       badgeClass: 'bg-sky-50 border-sky-200 text-sky-900',
       defaultHint: 'User default: "peserta" / sandi: "peserta123"'
@@ -107,7 +107,7 @@ export default function RoleLogin({ role, onLoginSuccess }: RoleLoginProps) {
     juri: {
       title: 'Portal Wasit & Juri Arbitrasi',
       subtitle: 'Penginputan Skor Tanding Resmi FIG',
-      desc: 'Form otorisasi bagi Panel Juri Otoritas Konfederasi Senam. Sesuai regulasi, akun Anda akan otomatis menentukan otoritas panel (D-Score / E-Score / Neutral).',
+      desc: 'Masukkan username dan password untuk mengakses portal juri. Akun menentukan jenis panel juri (D/E/Neutral).',
       colorTheme: 'from-rose-500 to-red-700 shadow-rose-500/10',
       badgeClass: 'bg-rose-50 border-rose-200 text-rose-900',
       defaultHint: 'User default: [ jurid / jurie / jurin ] / sandi: "juriD123" / "juriE123" etc'
@@ -115,7 +115,7 @@ export default function RoleLogin({ role, onLoginSuccess }: RoleLoginProps) {
     panitia: {
       title: 'Portal Staff & Panitia Pelaksana',
       subtitle: 'Kotak Kontrol GOR, Atlet, & Kalender Kompetisi',
-      desc: 'Gunakan portal pelaksana ini untuk meregistrasikan atlet baru, menentukan status arena, serta mengelola perolehan pertandingan secara global.',
+      desc: 'Masuk sebagai panitia untuk mendaftarkan atlet, mengatur arena, dan mengelola jadwal pertandingan dengan jelas.',
       colorTheme: 'from-amber-500 to-orange-600 shadow-amber-500/10',
       badgeClass: 'bg-amber-50 border-amber-200 text-amber-900',
       defaultHint: 'User default: "panitia" / sandi: "panitia123"'
@@ -123,7 +123,7 @@ export default function RoleLogin({ role, onLoginSuccess }: RoleLoginProps) {
     superadmin: {
       title: 'Portal Root Super Administrator',
       subtitle: 'Otoritas Kontrol Kredensial & Proteksi Sistem',
-      desc: 'Portal kendali tertinggi sistem. Digunakan untuk mendaftarkan akun juri baru, mengawasi log serangan siber, memulihkan password, dan melepaskan pemblokiran.',
+      desc: 'Masuk sebagai superadmin untuk menambah akun, mereset password, dan memantau keamanan sistem.',
       colorTheme: 'from-slate-905 from-slate-900 via-indigo-950 to-slate-900 shadow-slate-950/20',
       badgeClass: 'bg-indigo-50 border-indigo-200 text-indigo-950',
       defaultHint: 'User default: "superadmin" / sandi: "superadmin123"'
@@ -288,10 +288,11 @@ export default function RoleLogin({ role, onLoginSuccess }: RoleLoginProps) {
           <div className="space-y-4">
             {/* Username Field */}
             <div className="space-y-1">
-              <label className="text-[9px] font-mono font-bold text-slate-400 uppercase block tracking-wider">
+              <label htmlFor="login-username" className="text-[9px] font-mono font-bold text-slate-400 uppercase block tracking-wider">
                 Username Petugas
               </label>
               <input
+                id="login-username"
                 type="text"
                 required
                 disabled={lockoutTimeLeft > 0}
@@ -304,11 +305,12 @@ export default function RoleLogin({ role, onLoginSuccess }: RoleLoginProps) {
 
             {/* Password Field */}
             <div className="space-y-1">
-              <label className="text-[9px] font-mono font-bold text-slate-400 uppercase block tracking-wider">
+              <label htmlFor="login-password" className="text-[9px] font-mono font-bold text-slate-400 uppercase block tracking-wider">
                 Password Rahasia
               </label>
               <div className="relative">
                 <input
+                  id="login-password"
                   type={showPassword ? 'text' : 'password'}
                   required
                   disabled={lockoutTimeLeft > 0}
@@ -319,6 +321,7 @@ export default function RoleLogin({ role, onLoginSuccess }: RoleLoginProps) {
                 />
                 <button
                   type="button"
+                  aria-label={showPassword ? 'Sembunyikan password' : 'Tampilkan password'}
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-450 hover:text-slate-600 transition-colors bg-transparent border-none cursor-pointer"
                 >
@@ -329,8 +332,8 @@ export default function RoleLogin({ role, onLoginSuccess }: RoleLoginProps) {
           </div>
 
           {error && (
-            <div className="bg-rose-50 border border-rose-150 p-3 rounded-xl flex items-start gap-2 animate-shake">
-              <AlertTriangle className="w-4.5 h-4.5 text-rose-600 mt-0.5 shrink-0" />
+            <div role="alert" className="bg-rose-50 border border-rose-150 p-3 rounded-xl flex items-start gap-2 animate-shake">
+              <AlertTriangle className="w-4.5 h-4.5 text-rose-600 mt-0.5 shrink-0" aria-hidden="true" />
               <p className="text-2xs text-rose-750 font-bold font-mono leading-snug">
                 {error}
               </p>

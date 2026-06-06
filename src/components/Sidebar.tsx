@@ -153,6 +153,7 @@ export default function Sidebar({
       {isSidebarOpen && (
         <div 
           className="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-xs lg:hidden"
+          aria-hidden="true"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -178,6 +179,7 @@ export default function Sidebar({
           <button 
             type="button" 
             onClick={() => setSidebarOpen(false)}
+            aria-label="Tutup sidebar"
             className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 lg:hidden"
           >
             ✕

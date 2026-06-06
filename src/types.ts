@@ -97,6 +97,13 @@ export interface Competition {
   status: 'Upcoming' | 'Active' | 'Completed';
 }
 
+export interface CompetitionParticipant {
+  id: string;
+  competitionId: string;
+  athleteId: string;
+  registeredAt: string;
+}
+
 export interface SecurityLog {
   id: string;
   timestamp: string;
