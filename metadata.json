@@ -1,0 +1,6 @@
+{
+  "name": "GymnaScore",
+  "description": "Gymnastics End-to-End Scoring and Interactive Real-Time Scoreboard Platform",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
